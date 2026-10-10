@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>LRC Brand Board</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:block;src:url("fonts/Inter-Variable.woff2") format("woff2");}
+@font-face{font-family:"Geist Mono";font-weight:400;font-display:block;src:url("fonts/GeistMono-Regular.woff2") format("woff2");}
+:root{--blue:#2563EB;--navy:#0B2A63;--cyan:#0EA5C9;--ink:#0F1117;--muted:#6B7280}
+*{box-sizing:border-box;margin:0}
+body{background:#F7F8FA;font-family:Inter;color:var(--ink);padding:60px;width:2400px}
+h1{font-weight:600;font-size:56px;letter-spacing:-.03em;margin-bottom:8px}
+.sub{color:var(--muted);font-size:22px;margin-bottom:48px}
+.row{display:flex;gap:40px;align-items:flex-start}
+.post{width:540px;height:675px;container-type:size;position:relative;border-radius:24px;overflow:hidden;flex:none;box-shadow:0 20px 60px rgba(11,42,99,.12)}
+.post>img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.in{position:absolute;inset:7cqw;display:flex;flex-direction:column}
+.logo{display:flex;align-items:center;gap:2cqw;font-weight:600;font-size:3cqw;letter-spacing:-.01em}
+.logo svg{width:6cqw;height:6cqw}
+.eyebrow{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.12em;font-size:2.4cqw;padding:1.4cqw 3cqw;border-radius:999px;align-self:flex-start}
+.display{font-weight:600;font-size:9cqw;line-height:1.05;letter-spacing:-.03em}
+.body{font-size:3.2cqw;line-height:1.5}
+.pill{align-self:flex-start;border-radius:999px;padding:2cqw 5cqw;font-weight:500;font-size:3.2cqw}
+.azul{color:#fff}.azul .eyebrow{background:rgba(255,255,255,.18)}.azul .pill{background:#fff;color:var(--blue)}
+.claro .eyebrow{background:rgba(37,99,235,.1);color:var(--blue)}
+.card{background:rgba(255,255,255,.72);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.9);border-radius:4cqw;box-shadow:0 2cqw 6cqw rgba(11,42,99,.10);padding:4cqw;display:flex;gap:3cqw;align-items:center}
+.tile{width:9cqw;height:9cqw;border-radius:28%;background:var(--blue);flex:none;display:grid;place-items:center;color:#fff;font-family:"Geist Mono";font-size:3cqw}
+.card b{font-weight:600;font-size:3.6cqw;letter-spacing:-.02em;display:block}
+.card span{color:var(--muted);font-size:2.8cqw}
+.rule{width:12cqw;height:.8cqw;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.side{flex:1;display:flex;flex-direction:column;gap:36px}
+.sw{display:flex;gap:16px;flex-wrap:wrap}
+.c{width:150px}.c i{display:block;height:100px;border-radius:16px;border:1px solid #E5E7EB}
+.c p{font-size:15px;margin-top:8px;font-weight:600}.c small{font-family:"Geist Mono";color:var(--muted);font-size:13px}
+.lab{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.12em;font-size:14px;color:var(--muted);margin-bottom:14px}
+.type div{margin-bottom:10px}
+</style></head><body>
+<h1>LRC IT Solutions — Brand</h1>
+<p class="sub">Fondos de Instagram · paleta · tipografía · componentes</p>
+<div class="row">
+  <div class="post azul"><img class="bg" src="backgrounds/fondo-azul.jpg">
+    <div class="in" style="justify-content:space-between">
+      <div class="logo"><svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><rect x="20" y="16" width="8" height="32" fill="#2563EB"/><rect x="20" y="40" width="24" height="8" fill="#2563EB"/></svg>LRC IT Solutions</div>
+      <div style="display:flex;flex-direction:column;gap:4cqw">
+        <span class="eyebrow">AI · Software · Automazione</span>
+        <div class="display">Soluzioni digitali. Un unico partner.</div>
+        <p class="body" style="color:rgba(255,255,255,.8)">Intelligenza artificiale e software su misura per aziende che vogliono crescere.</p>
+        <span class="pill">Parliamo</span>
+      </div>
+    </div></div>
+  <div class="post claro"><img class="bg" src="backgrounds/fondo-claro.jpg">
+    <div class="in" style="gap:4cqw">
+      <div class="logo"><svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#2563EB"/><rect x="20" y="16" width="8" height="32" fill="#fff"/><rect x="20" y="40" width="24" height="8" fill="#fff"/></svg>LRC IT Solutions</div>
+      <span class="eyebrow" style="margin-top:4cqw">Come lavoriamo</span>
+      <div class="display" style="font-size:7.5cqw">Dall'idea alla <span style="color:var(--blue)">soluzione</span>.</div>
+      <div class="rule"></div>
+      <div class="card"><div class="tile">01</div><div><b>Analizziamo</b><span>Comprendiamo il processo e il problema.</span></div></div>
+      <div class="card"><div class="tile">02</div><div><b>Progettiamo</b><span>Definiamo la soluzione più adatta.</span></div></div>
+      <div class="card"><div class="tile">03</div><div><b>Sviluppiamo</b><span>Software, automazioni e integrazioni.</span></div></div>
+    </div></div>
+  <div class="side">
+    <div><div class="lab">Paleta</div><div class="sw">
+      <div class="c"><i style="background:#2563EB"></i><p>Blue</p><small>#2563EB</small></div>
+      <div class="c"><i style="background:#0B2A63"></i><p>Navy</p><small>#0B2A63</small></div>
+      <div class="c"><i style="background:#0EA5C9"></i><p>Cyan</p><small>#0EA5C9</small></div>
+      <div class="c"><i style="background:#0F1117"></i><p>Ink</p><small>#0F1117</small></div>
+      <div class="c"><i style="background:#6B7280"></i><p>Muted</p><small>#6B7280</small></div>
+      <div class="c"><i style="background:#F7F8FA"></i><p>Surface</p><small>#F7F8FA</small></div>
+      <div class="c"><i style="background:#DCF3FB"></i><p>Celeste</p><small>#DCF3FB</small></div>
+      <div class="c"><i style="background:#E9D8FC"></i><p>Lila</p><small>#E9D8FC</small></div>
+    </div></div>
+    <div class="type"><div class="lab">Tipografía</div>
+      <div style="font-weight:600;font-size:64px;letter-spacing:-.03em;line-height:1.05">Inter 600 — Display</div>
+      <div style="font-size:24px">Inter 400 — Testo, sentence case, interlinea 1.5</div>
+      <div style="font-family:'Geist Mono';text-transform:uppercase;letter-spacing:.12em;font-size:18px;color:var(--blue)">Geist Mono — Eyebrow / etichette</div>
+    </div>
+    <div><div class="lab">Logo</div><div style="display:flex;gap:24px">
+      <div style="background:#fff;border-radius:20px;padding:28px 36px" class="logo"><svg viewBox="0 0 64 64" style="width:56px;height:56px"><rect width="64" height="64" rx="14" fill="#2563EB"/><rect x="20" y="16" width="8" height="32" fill="#fff"/><rect x="20" y="40" width="24" height="8" fill="#fff"/></svg><span style="font-size:28px">LRC IT Solutions</span></div>
+      <div style="background:#2563EB;color:#fff;border-radius:20px;padding:28px 36px" class="logo"><svg viewBox="0 0 64 64" style="width:56px;height:56px"><rect width="64" height="64" rx="14" fill="#fff"/><rect x="20" y="16" width="8" height="32" fill="#2563EB"/><rect x="20" y="40" width="24" height="8" fill="#2563EB"/></svg><span style="font-size:28px">LRC IT Solutions</span></div>
+    </div></div>
+  </div>
+</div>
+</body></html>
