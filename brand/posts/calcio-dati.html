@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>LRC — Il calcio, letto attraverso i dati</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:block;src:url("../fonts/Inter-Variable.woff2") format("woff2");}
+@font-face{font-family:"Geist Mono";font-weight:400;font-display:block;src:url("../fonts/GeistMono-Regular.woff2") format("woff2");}
+:root{--blue:#2563EB;--navy:#0B2A63;--ink:#0F1117}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1350px;overflow:hidden}
+.post{width:1080px;height:1350px;position:relative;container-type:size;font-family:Inter}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.in{position:absolute;inset:7cqw;display:flex;flex-direction:column}
+.brand{font-weight:700;font-size:2.6cqw;letter-spacing:.04em;text-transform:uppercase}
+.cat{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.14em;font-size:2.4cqw;padding:1.3cqw 3cqw;border-radius:999px;align-self:flex-start;margin-top:24cqw}
+h1{font-weight:700;font-size:8.4cqw;line-height:1.04;letter-spacing:-.02em;margin-top:4cqw}
+.desc{font-size:3.5cqw;line-height:1.45;font-weight:400;margin-top:5cqw;max-width:74cqw}
+.keys{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.12em;font-size:2.3cqw;margin-top:5cqw}
+.web{margin-top:auto;font-size:2.6cqw;font-weight:500}
+/* azul */
+.azul{color:#fff}
+.azul .cat{background:#fff;color:var(--blue)}
+.azul .desc{color:rgba(255,255,255,.85)}
+.azul .keys{color:rgba(255,255,255,.75)}
+.azul .web{color:rgba(255,255,255,.85)}
+/* claro */
+.claro{color:var(--navy)}
+.claro .cat{background:rgba(37,99,235,.10);color:var(--blue)}
+.claro .desc{color:#3b4357}
+.claro .keys{color:var(--blue)}
+.claro .web{color:#3b4357}
+</style></head>
+<body>
+<div class="post azul" id="p">
+  <img class="bg" id="bg" src="../backgrounds/fondo-azul.jpg">
+  <div class="in">
+    <div class="brand">LRC IT Solutions</div>
+    <div class="cat">Sports Technology</div>
+    <h1>IL CALCIO,<br>LETTO ATTRAVERSO<br>I DATI.</h1>
+    <p class="desc">Trasformiamo le immagini delle partite in dati utili per analizzare il gioco.</p>
+    <div class="keys">Player Tracking · Video Analysis</div>
+    <div class="web">www.lrc-solutions.com</div>
+  </div>
+</div>
+<script>
+if(location.hash==="#claro"){document.getElementById("p").className="post claro";document.getElementById("bg").src="../backgrounds/fondo-claro.jpg"}
+</script>
+</body></html>

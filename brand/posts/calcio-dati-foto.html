@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>LRC — Il calcio, letto attraverso i dati (foto)</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:block;src:url("../fonts/Inter-Variable.woff2") format("woff2");}
+@font-face{font-family:"Geist Mono";font-weight:400;font-display:block;src:url("../fonts/GeistMono-Regular.woff2") format("woff2");}
+:root{--blue:#2563EB;--navy:#0B2A63}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1350px;overflow:hidden}
+.post{width:1080px;height:1350px;position:relative;container-type:size;font-family:Inter}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.txt{position:absolute;left:7cqw;right:7cqw;top:5cqw;display:flex;flex-direction:column}
+.brand{font-weight:700;font-size:2.6cqw;letter-spacing:.04em;text-transform:uppercase}
+.cat{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.14em;font-size:2.3cqw;padding:1.2cqw 3cqw;border-radius:999px;align-self:flex-start;margin-top:3.6cqw}
+h1{font-weight:700;font-size:7.2cqw;line-height:1.04;letter-spacing:-.02em;margin-top:3cqw}
+.desc{font-size:3.1cqw;line-height:1.4;margin-top:3cqw;max-width:78cqw}
+.keys{font-family:"Geist Mono";text-transform:uppercase;letter-spacing:.12em;font-size:2.2cqw;margin-top:3cqw}
+.photo{position:absolute;left:0;right:0;top:50cqh;height:45.2cqh;overflow:hidden}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.75) contrast(1.05) brightness(.95)}
+.photo .tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,42,99,.35),rgba(37,99,235,.28));mix-blend-mode:soft-light}
+.photo .tint2{position:absolute;inset:0;background:rgba(11,42,99,.18)}
+.photo svg{position:absolute;inset:0;width:100%;height:100%}
+.web{position:absolute;left:7cqw;bottom:2.4cqw;font-size:2.5cqw;font-weight:500}
+.azul{color:#fff}.azul .cat{background:#fff;color:var(--blue)}.azul .desc{color:rgba(255,255,255,.85)}.azul .keys{color:rgba(255,255,255,.75)}.azul .web{color:rgba(255,255,255,.85)}
+.claro{color:var(--navy)}.claro .cat{background:rgba(37,99,235,.10);color:var(--blue)}.claro .desc{color:#3b4357}.claro .keys{color:var(--blue)}.claro .web{color:#3b4357}
+</style></head>
+<body>
+<div class="post claro" id="p">
+  <img class="bg" id="bg" src="../backgrounds/fondo-claro.jpg">
+  <div class="txt">
+    <div class="brand">LRC IT Solutions</div>
+    <div class="cat">Sports Technology</div>
+    <h1>IL CALCIO,<br>LETTO ATTRAVERSO<br>I DATI.</h1>
+    <p class="desc">Trasformiamo le immagini delle partite in dati utili per analizzare il gioco.</p>
+    <div class="keys">Player Tracking · Video Analysis</div>
+  </div>
+  <div class="photo">
+    <img src="assets/cancha.jpg" onerror="this.onerror=null;this.src='assets/cancha-thumb.jpg'">
+    <div class="tint"></div><div class="tint2"></div>
+    <svg viewBox="0 0 199 149" preserveAspectRatio="xMidYMid slice" fill="none">
+      <g id="trails" stroke="#BFD6FF" stroke-opacity=".85" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" vector-effect="non-scaling-stroke"></g>
+      <g id="boxes" stroke="#4F8DFF" stroke-width="2.5"></g>
+    </svg>
+  </div>
+  <div class="web">www.lrc-solutions.com</div>
+</div>
+<script>
+if(location.hash==="#azul"){document.getElementById("p").className="post azul";document.getElementById("bg").src="../backgrounds/fondo-azul.jpg"}
+const NS="http://www.w3.org/2000/svg";
+// centro (x,y), tamaño (w,h) en coordenadas de la foto (199×149) + estela previa
+const P=[
+ {x:30,y:78,w:10,h:14,t:[[24,64],[27,71]]},
+ {x:44,y:43,w:8,h:11,t:[[50,33],[47,38]]},
+ {x:97,y:115,w:9,h:14,t:[[86,106],[92,111]]},
+ {x:131,y:117,w:9,h:15,t:[[122,108],[127,113]]},
+ {x:123,y:78,w:9,h:14,t:[[110,66],[117,73]]},
+ {x:158,y:73,w:8,h:12,t:[[170,62],[164,67]]}
+];
+const mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);e.setAttribute("vector-effect","non-scaling-stroke");return e};
+for(const p of P){
+  document.getElementById("trails").appendChild(mk("polyline",{points:[...p.t,[p.x,p.y]].map(q=>q.join(",")).join(" ")}));
+  const L=Math.min(p.w,p.h)*.32,x0=p.x-p.w/2,y0=p.y-p.h/2,x1=p.x+p.w/2,y1=p.y+p.h/2;
+  // marcos con esquinas (estilo detección)
+  const d=`M${x0},${y0+L}V${y0}H${x0+L} M${x1-L},${y0}H${x1}V${y0+L} M${x1},${y1-L}V${y1}H${x1-L} M${x0+L},${y1}H${x0}V${y1-L}`;
+  document.getElementById("boxes").appendChild(mk("path",{d,"stroke-linecap":"round","stroke-linejoin":"round"}));
+  document.getElementById("boxes").appendChild(mk("rect",{x:x0,y:y0,width:p.w,height:p.h,"stroke-opacity":".35","stroke-width":"1.2"}));
+}
+</script>
+</body></html>
