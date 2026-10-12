@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <title>Receptionist virtuale — LRC IT Solutions</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-weight: 100 900;
+        font-display: block;
+        src: url("assets/brand/fonts/Inter-Variable.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Geist Mono";
+        font-weight: 400;
+        font-display: block;
+        src: url("assets/brand/fonts/GeistMono-Regular.woff2") format("woff2");
+      }
+      :root {
+        --blue: #2563eb;
+        --navy: #0b2a63;
+        --cyan: #0ea5c9;
+        --ink: #0f1117;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --wa-out: #d9fdd3;
+        --wa-bg: #f3f6fa;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #3d689b;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Inter", sans-serif;
+        color: #fff;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- backgrounds ---------- */
+      .bg {
+        overflow: hidden;
+      }
+      .bg .bg-inner {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .bg img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* ---------- shared components ---------- */
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .lockup svg {
+        display: block;
+        flex: none;
+      }
+      .wordmark {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .eyebrow {
+        font-family: "Geist Mono", monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .phone {
+        position: absolute;
+        background: var(--wa-bg);
+        border-radius: 44px;
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 24px 64px rgba(11, 42, 99, 0.22);
+        overflow: hidden;
+        color: var(--ink);
+      }
+      .phone-head {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 118px;
+        padding: 0 34px;
+        background: #fff;
+        border-bottom: 2px solid var(--border);
+      }
+      .phone-head .title {
+        font-size: 40px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .phone-head .status {
+        font-size: 26px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .avatar {
+        flex: none;
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: #dfe5ee;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      /* chat list (hook) */
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        height: 148px;
+        padding: 0 34px;
+        background: #fff;
+        border-bottom: 2px solid #eef1f5;
+      }
+      .row .meta {
+        flex: 1;
+        min-width: 0;
+      }
+      .row .name {
+        font-size: 36px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .row .preview {
+        font-size: 29px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 6px;
+      }
+      .row .side {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+      }
+      .row .time {
+        font-size: 24px;
+        font-weight: 500;
+        color: #15803d;
+      }
+      .badge {
+        position: relative;
+        min-width: 48px;
+        height: 48px;
+        border-radius: 999px;
+        background: #15803d;
+        color: #fff;
+        font-size: 27px;
+        font-weight: 600;
+      }
+      .badge span {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* bubbles */
+      .chat-body {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        padding: 34px 30px;
+      }
+      .bubble {
+        max-width: 640px;
+        padding: 22px 28px 18px;
+        border-radius: 30px;
+        font-size: 36px;
+        line-height: 1.32;
+        box-shadow: 0 2px 4px rgba(11, 42, 99, 0.08);
+      }
+      .bubble .stamp {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        font-size: 22px;
+        color: #4b5563;
+      }
+      .bubble.out {
+        align-self: flex-end;
+        background: var(--wa-out);
+        border-bottom-right-radius: 8px;
+      }
+      .bubble.in {
+        align-self: flex-start;
+        background: #fff;
+        border-bottom-left-radius: 8px;
+      }
+      .typing {
+        position: absolute;
+        left: 30px;
+        display: flex;
+        gap: 12px;
+        padding: 28px 30px;
+        background: #fff;
+        border-radius: 30px;
+        border-bottom-left-radius: 8px;
+      }
+      .typing i {
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #9aa3b2;
+      }
+      .file {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 14px;
+        padding: 20px 22px;
+        border-radius: 20px;
+        background: #f1f4f8;
+        font-size: 30px;
+        font-weight: 500;
+      }
+
+      /* ---------- scene 1: hook ---------- */
+      #s1-phone {
+        left: 110px;
+        top: 300px;
+        width: 860px;
+      }
+
+      /* ---------- scene 2: solution ---------- */
+      .center-col {
+        position: absolute;
+        left: 76px;
+        right: 76px;
+        top: 330px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      /* wordmark as on lrc-solutions.com: "LRC" accent + "IT Solutions" in text colour */
+      #s2-lockup .wordmark {
+        font-size: 72px;
+        letter-spacing: -0.025em;
+      }
+      .on-blue .lrc {
+        color: var(--ink);
+      }
+      .on-blue .its {
+        color: #fff;
+      }
+      .on-light .lrc {
+        color: var(--blue);
+      }
+      .on-light .its {
+        color: var(--ink);
+      }
+      #s2-title {
+        margin-top: 70px;
+        font-size: 112px;
+        font-weight: 600;
+        line-height: 1.04;
+        letter-spacing: -0.03em;
+      }
+      #s2-sub {
+        margin-top: 28px;
+        font-size: 60px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      #s2-badge {
+        margin-top: 64px;
+        padding: 18px 64px 22px;
+        border-radius: 999px;
+        background: #fff;
+        color: var(--blue);
+        font-size: 150px;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+
+      /* ---------- scene 3: features ---------- */
+      .feat-top {
+        position: absolute;
+        left: 76px;
+        right: 76px;
+        top: 285px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .feat-top .wordmark {
+        font-size: 44px;
+        letter-spacing: -0.025em;
+      }
+      .chip {
+        padding: 12px 26px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--blue);
+        font-size: 26px;
+      }
+      .feat-head {
+        position: absolute;
+        left: 76px;
+        right: 76px;
+        top: 420px;
+        color: var(--ink);
+      }
+      .icon-tile {
+        width: 128px;
+        height: 128px;
+        border-radius: 28%;
+        background: var(--blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 16px 40px rgba(37, 99, 235, 0.28);
+      }
+      .feat-title {
+        margin-top: 40px;
+        font-size: 100px;
+        font-weight: 600;
+        line-height: 1.04;
+        letter-spacing: -0.03em;
+        max-width: 900px;
+      }
+      .feat-title .kw {
+        color: var(--blue);
+      }
+      .feat-phone {
+        left: 76px;
+        top: 900px;
+        width: 860px;
+      }
+
+      /* ---------- scene 4: close ---------- */
+      #s4-pre {
+        font-size: 64px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      #s4-title {
+        margin-top: 30px;
+        font-size: 138px;
+        font-weight: 600;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+      }
+      #s4-lockup {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1360px;
+        justify-content: center;
+      }
+      #s4-lockup .wordmark {
+        font-size: 64px;
+        letter-spacing: -0.025em;
+      }
+
+      /* ---------- captions ---------- */
+      #captions {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1300px;
+        height: 220px;
+        pointer-events: none;
+      }
+      .cap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+      }
+      .cap .pill {
+        max-width: 900px;
+        padding: 20px 40px 24px;
+        border-radius: 36px;
+        background: rgba(11, 42, 99, 0.88);
+        text-align: center;
+        font-size: 68px;
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+      .cap .w {
+        opacity: 0.45;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-auyb" id="root" data-composition-id="main" data-start="0" data-duration="23.127" data-width="1080" data-height="1920">
+      <div data-hf-studio-original-display="" data-hf-studio-original-box-sizing="" data-hf-studio-original-flex-shrink="" data-hf-studio-original-flex-grow="" data-hf-studio-original-flex-basis="" data-hf-studio-original-max-height="" data-hf-studio-original-max-width="" data-hf-studio-original-min-height="" data-hf-studio-original-min-width="" data-hf-studio-original-box-height="1920" data-hf-studio-original-box-width="1080" data-hf-studio-original-height="" data-hf-studio-original-width="" data-hf-studio-box-size="true" style="background-image: linear-gradient(135deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.04) 100%); background-position: center; background-repeat: no-repeat; background-size: contain; --hf-studio-width: 1190px; --hf-studio-height: 2115px; width: 1190px; height: 2115px; min-width: 0px; min-height: 0px; max-width: none; max-height: none; box-sizing: border-box" data-hf-id="hf-ue18" id="bg1-2" class="clip bg" data-start="8.89" data-duration="8.893" data-track-index="34">
+              <div data-hf-id="hf-2136" class="bg-inner" id="bg1-inner-2" data-layout-allow-overflow=""><img data-hf-id="hf-0a6r" src="assets/brand/backgrounds/fondo-azul.jpg" alt=""></div>
+            </div>
+      <!-- ================= BACKGROUNDS ================= -->
+      <div data-hf-studio-original-display="" data-hf-studio-original-box-sizing="" data-hf-studio-original-flex-shrink="" data-hf-studio-original-flex-grow="" data-hf-studio-original-flex-basis="" data-hf-studio-original-max-height="" data-hf-studio-original-max-width="" data-hf-studio-original-min-height="" data-hf-studio-original-min-width="" data-hf-studio-original-box-height="1920" data-hf-studio-original-box-width="1080" data-hf-studio-original-height="" data-hf-studio-original-width="" data-hf-studio-box-size="true" style="background-image: linear-gradient(135deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.04) 100%); background-position: center; background-repeat: no-repeat; background-size: contain; --hf-studio-width: 1273px; --hf-studio-height: 2261px; width: 1273px; height: 2261px; min-width: 0px; min-height: 0px; max-width: none; max-height: none; box-sizing: border-box" data-hf-id="hf-pxnv" id="bg1" class="clip bg" data-start="0" data-duration="8.893" data-track-index="0">
+        <div data-hf-id="hf-k9pa" class="bg-inner" id="bg1-inner" data-layout-allow-overflow=""><img data-hf-id="hf-ioci" src="assets/brand/backgrounds/fondo-azul.jpg" alt=""></div>
+      </div>
+      <div data-hf-id="hf-hfod" id="bg2" class="clip bg" data-start="8.893" data-duration="10.682" data-track-index="0">
+        <div data-hf-id="hf-eyux" class="bg-inner" id="bg2-inner" data-layout-allow-overflow=""><img data-hf-id="hf-prpl" src="assets/brand/backgrounds/fondo-claro.jpg" alt=""></div>
+      </div>
+      <div style="background-image: linear-gradient(135deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.04) 100%)" data-hf-id="hf-jc9l" id="bg3" class="clip bg" data-start="19.575" data-duration="3.552" data-track-index="0">
+        <div data-hf-id="hf-20ho" class="bg-inner" id="bg3-inner" data-layout-allow-overflow=""><img data-hf-id="hf-zvvq" src="assets/brand/backgrounds/fondo-azul.jpg" alt=""></div>
+      </div>
+
+      <!-- ================= S1 · HOOK (0 – 3.553) ================= -->
+      <section data-hf-id="hf-sv0t" id="s1" class="clip" data-start="0" data-duration="3.553" data-track-index="1">
+        <div data-hf-id="hf-njsl" id="s1-phone" class="phone">
+          <div data-hf-id="hf-vebf" class="phone-head">
+            <div data-hf-id="hf-yeow">
+              <div data-hf-id="hf-lkbg" class="title">Chat</div>
+              <div data-hf-id="hf-1sf9" class="status" id="s1-status">5 chat non lette</div>
+            </div>
+          </div>
+          <div data-hf-id="hf-oyvg" class="row" id="s1-r1">
+            <div data-hf-id="hf-o4a3" class="avatar"><svg data-hf-id="hf-4iby" width="56" height="62" viewBox="0 0 56 62"><circle data-hf-id="hf-9gec" cx="28" cy="20" r="14" fill="#b8c2d1" /><path data-hf-id="hf-2y42" d="M0 62c0-16 12-26 28-26s28 10 28 26z" fill="#b8c2d1" /></svg></div>
+            <div data-hf-id="hf-puvz" class="meta"><div data-hf-id="hf-j6hp" class="name">Cliente</div><div data-hf-id="hf-l8eq" class="preview">Buongiorno, siete aperti sabato?</div></div>
+            <div data-hf-id="hf-cww1" class="side"><div data-hf-id="hf-29gd" class="time">09:12</div><div data-hf-id="hf-9s2p" class="badge"><span data-hf-id="hf-zxyz" id="s1-b1">1</span></div></div>
+          </div>
+          <div data-hf-id="hf-xmrb" class="row" id="s1-r2">
+            <div data-hf-id="hf-z7gr" class="avatar"><svg data-hf-id="hf-anyq" width="56" height="62" viewBox="0 0 56 62"><circle data-hf-id="hf-aqnw" cx="28" cy="20" r="14" fill="#b8c2d1" /><path data-hf-id="hf-t7na" d="M0 62c0-16 12-26 28-26s28 10 28 26z" fill="#b8c2d1" /></svg></div>
+            <div data-hf-id="hf-zjfj" class="meta"><div data-hf-id="hf-25dd" class="name">Cliente</div><div data-hf-id="hf-xuco" class="preview">Vorrei prenotare per domani</div></div>
+            <div data-hf-id="hf-w7th" class="side"><div data-hf-id="hf-1iqt" class="time">09:30</div><div data-hf-id="hf-46et" class="badge"><span data-hf-id="hf-z103" id="s1-b2">2</span></div></div>
+          </div>
+          <div data-hf-id="hf-tona" class="row" id="s1-r3">
+            <div data-hf-id="hf-ur6m" class="avatar"><svg data-hf-id="hf-b29r" width="56" height="62" viewBox="0 0 56 62"><circle data-hf-id="hf-9jqt" cx="28" cy="20" r="14" fill="#b8c2d1" /><path data-hf-id="hf-tlyb" d="M0 62c0-16 12-26 28-26s28 10 28 26z" fill="#b8c2d1" /></svg></div>
+            <div data-hf-id="hf-z54i" class="meta"><div data-hf-id="hf-3cag" class="name">Cliente</div><div data-hf-id="hf-zedm" class="preview">Mi mandate un preventivo?</div></div>
+            <div data-hf-id="hf-xeqk" class="side"><div data-hf-id="hf-fsjb" class="time">10:05</div><div data-hf-id="hf-5dbw" class="badge"><span data-hf-id="hf-mjex" id="s1-b3">1</span></div></div>
+          </div>
+          <div data-hf-id="hf-4k4x" class="row" id="s1-r4">
+            <div data-hf-id="hf-ucvl" class="avatar"><svg data-hf-id="hf-bgks" width="56" height="62" viewBox="0 0 56 62"><circle data-hf-id="hf-9y1u" cx="28" cy="20" r="14" fill="#b8c2d1" /><path data-hf-id="hf-u09c" d="M0 62c0-16 12-26 28-26s28 10 28 26z" fill="#b8c2d1" /></svg></div>
+            <div data-hf-id="hf-yqth" class="meta"><div data-hf-id="hf-2xzf" class="name">Cliente</div><div data-hf-id="hf-0c3x" class="preview">Quanto costa il servizio?</div></div>
+            <div data-hf-id="hf-x0fj" class="side"><div data-hf-id="hf-zdtb" class="time">10:41</div><div data-hf-id="hf-4z0v" class="badge"><span data-hf-id="hf-nks2" id="s1-b4">3</span></div></div>
+          </div>
+          <div data-hf-id="hf-3sh4" class="row" id="s1-r5">
+            <div data-hf-id="hf-tykk" class="avatar"><svg data-hf-id="hf-buvt" width="56" height="62" viewBox="0 0 56 62"><circle data-hf-id="hf-bxkz" cx="28" cy="20" r="14" fill="#b8c2d1" /><path data-hf-id="hf-r845" d="M0 62c0-16 12-26 28-26s28 10 28 26z" fill="#b8c2d1" /></svg></div>
+            <div data-hf-id="hf-1iyo" class="meta"><div data-hf-id="hf-0yga" class="name">Cliente</div><div data-hf-id="hf-stc2" class="preview">Ciao? C'è qualcuno?</div></div>
+            <div data-hf-id="hf-y7cm" class="side"><div data-hf-id="hf-2tmv" class="time">11:20</div><div data-hf-id="hf-a7x2" class="badge"><span data-hf-id="hf-xesn" id="s1-b5">1</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= S2 · SOLUTION (3.553 – 8.893) ================= -->
+      <section data-hf-id="hf-15da" id="s2" class="clip on-blue" data-start="3.553" data-duration="5.34" data-track-index="1">
+        <div data-hf-id="hf-fmui" class="center-col">
+          <div data-hf-id="hf-msuu" class="lockup" id="s2-lockup">
+            <div data-hf-id="hf-60df" class="wordmark"><span data-hf-id="hf-m549" class="lrc">LRC</span> <span data-hf-id="hf-0rgw" class="its">IT Solutions</span></div>
+          </div>
+          <div data-hf-id="hf-g646" id="s2-title">Receptionist virtuale</div>
+          <div data-hf-id="hf-p837" id="s2-sub">su WhatsApp</div>
+          <div data-hf-id="hf-bocs" id="s2-badge">24/7</div>
+        </div>
+      </section>
+
+      <!-- ================= S3 · FEATURES (8.893 – 19.575) ================= -->
+      <!-- persistent top bar across the four features -->
+      <div data-hf-id="hf-unfd" id="s3-top" class="clip on-light" data-start="8.893" data-duration="10.682" data-track-index="2">
+        <div data-hf-id="hf-jvn6" class="feat-top">
+          <div data-hf-id="hf-6jvi" class="lockup">
+            <div data-hf-id="hf-jomb" class="wordmark"><span data-hf-id="hf-qd0d" class="lrc">LRC</span> <span data-hf-id="hf-h1pk" class="its">IT Solutions</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F1 · Prenota appuntamenti -->
+      <section data-hf-id="hf-ry5q" id="f1" class="clip" data-start="8.893" data-duration="2.671" data-track-index="1">
+        <div data-hf-id="hf-i9o1" class="feat-head" id="f1-head">
+          <div data-hf-id="hf-dp9k" class="icon-tile">
+            <svg data-hf-id="hf-6p3g" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect data-hf-id="hf-al1h" x="3" y="4.5" width="18" height="16.5" rx="2.5" /><path data-hf-id="hf-gmpy" d="M3 9.5h18M8 2.5v4M16 2.5v4" /><path data-hf-id="hf-o3qt" d="m9 15 2 2 4-4" /></svg>
+          </div>
+          <div data-hf-id="hf-5qke" class="feat-title">Prenota <span data-hf-id="hf-k7w5" class="kw">appuntamenti</span></div>
+        </div>
+        <div data-hf-id="hf-chq1" class="phone feat-phone" id="f1-phone">
+          <div data-hf-id="hf-xbzv" class="phone-head">
+            <svg data-hf-id="hf-laqg" width="76" height="76" viewBox="0 0 64 64"><rect data-hf-id="hf-o4k3" width="64" height="64" rx="32" fill="#2563EB" /><rect data-hf-id="hf-xryd" x="24" y="18" width="7" height="28" fill="#fff" /><rect data-hf-id="hf-jrpr" x="24" y="39" width="18" height="7" fill="#fff" /></svg>
+            <div data-hf-id="hf-y7yw"><div data-hf-id="hf-h0j5" class="title">Receptionist virtuale</div><div data-hf-id="hf-jex1" class="status">online</div></div>
+          </div>
+          <div data-hf-id="hf-h3wb" class="chat-body">
+            <div data-hf-id="hf-1uxd" class="bubble out" id="f1-q">Posso prenotare per giovedì?<div data-hf-id="hf-i78i" class="stamp">16:02 <svg data-hf-id="hf-06f5" width="30" height="18" viewBox="0 0 30 18" fill="none" stroke="#0EA5C9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-ujd3" d="m2 9 5 5 9-11M13 13l1 1 9-11" /></svg></div></div>
+            <div data-hf-id="hf-zggb" class="bubble in" id="f1-a">Certo! Giovedì alle 17:30 va bene?<div data-hf-id="hf-perq" class="stamp">16:02</div></div>
+          </div>
+          <div data-hf-id="hf-h123" class="typing" id="f1-t" style="top: 300px"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i></div>
+        </div>
+      </section>
+
+      <!-- F2 · Risponde alle domande -->
+      <section data-hf-id="hf-i5rf" id="f2" class="clip" data-start="11.564" data-duration="2.67" data-track-index="1">
+        <div data-hf-id="hf-h86o" class="feat-head" id="f2-head">
+          <div data-hf-id="hf-ryn4" class="icon-tile">
+            <svg data-hf-id="hf-jr8k" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-7alr" d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z" /><path data-hf-id="hf-4s88" d="M9.5 10a2.5 2.5 0 0 1 4.9.7c0 1.6-2.4 2-2.4 3.3M12 16.6h.01" /></svg>
+          </div>
+          <div data-hf-id="hf-nhfh" class="feat-title">Risponde alle <span data-hf-id="hf-k4ot" class="kw">domande</span></div>
+        </div>
+        <div data-hf-id="hf-4j7a" class="phone feat-phone" id="f2-phone">
+          <div data-hf-id="hf-wxou" class="phone-head">
+            <svg data-hf-id="hf-8cfk" width="76" height="76" viewBox="0 0 64 64"><rect data-hf-id="hf-4kfn" width="64" height="64" rx="32" fill="#2563EB" /><rect data-hf-id="hf-2dqx" x="24" y="18" width="7" height="28" fill="#fff" /><rect data-hf-id="hf-qhbj" x="24" y="39" width="18" height="7" fill="#fff" /></svg>
+            <div data-hf-id="hf-x11t"><div data-hf-id="hf-vun9" class="title">Receptionist virtuale</div><div data-hf-id="hf-01i1" class="status">online</div></div>
+          </div>
+          <div data-hf-id="hf-qnjv" class="chat-body">
+            <div data-hf-id="hf-t7fx" class="bubble out" id="f2-q">Siete aperti il sabato?<div data-hf-id="hf-vk6s" class="stamp">22:47 <svg data-hf-id="hf-4v4l" width="30" height="18" viewBox="0 0 30 18" fill="none" stroke="#0EA5C9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-w59j" d="m2 9 5 5 9-11M13 13l1 1 9-11" /></svg></div></div>
+            <div data-hf-id="hf-we3o" class="bubble in" id="f2-a">Sì, il sabato siamo aperti la mattina. Vuoi prenotare?<div data-hf-id="hf-2c5o" class="stamp">22:47</div></div>
+          </div>
+          <div data-hf-id="hf-am0i" class="typing" id="f2-t" style="top: 300px"><i data-hf-id="hf-ylp6"></i><i data-hf-id="hf-0l8b"></i><i data-hf-id="hf-0zjc"></i></div>
+        </div>
+      </section>
+
+      <!-- F3 · Invia preventivi -->
+      <section data-hf-id="hf-grml" id="f3" class="clip" data-start="14.234" data-duration="2.647" data-track-index="1">
+        <div data-hf-id="hf-z38b" class="feat-head" id="f3-head">
+          <div data-hf-id="hf-qrq1" class="icon-tile">
+            <svg data-hf-id="hf-ikbh" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-27k0" d="M14 2.5H7a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7.5z" /><path data-hf-id="hf-vv41" d="M14 2.5v5h5M9 13h6M9 17h4" /></svg>
+          </div>
+          <div data-hf-id="hf-rv32" class="feat-title">Invia <span data-hf-id="hf-vuwz" class="kw">preventivi</span></div>
+        </div>
+        <div data-hf-id="hf-y7m7" class="phone feat-phone" id="f3-phone">
+          <div data-hf-id="hf-wjdt" class="phone-head">
+            <svg data-hf-id="hf-75ih" width="76" height="76" viewBox="0 0 64 64"><rect data-hf-id="hf-464m" width="64" height="64" rx="32" fill="#2563EB" /><rect data-hf-id="hf-3ko0" x="24" y="18" width="7" height="28" fill="#fff" /><rect data-hf-id="hf-q30i" x="24" y="39" width="18" height="7" fill="#fff" /></svg>
+            <div data-hf-id="hf-xfcu"><div data-hf-id="hf-x1kc" class="title">Receptionist virtuale</div><div data-hf-id="hf-18f4" class="status">online</div></div>
+          </div>
+          <div data-hf-id="hf-q98u" class="chat-body">
+            <div data-hf-id="hf-3mda" class="bubble out" id="f3-q">Mi mandi un preventivo?<div data-hf-id="hf-28v0" class="stamp">10:15 <svg data-hf-id="hf-621o" width="30" height="18" viewBox="0 0 30 18" fill="none" stroke="#0EA5C9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-vqyi" d="m2 9 5 5 9-11M13 13l1 1 9-11" /></svg></div></div>
+            <div data-hf-id="hf-nx4h" class="bubble in" id="f3-a">Ecco il tuo preventivo:
+              <div data-hf-id="hf-edgk" class="file">
+                <svg data-hf-id="hf-5eq9" width="44" height="52" viewBox="0 0 22 26"><path data-hf-id="hf-go8w" d="M3 0h11l8 8v15a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3z" fill="#2563EB" /><path data-hf-id="hf-wwi2" d="M14 0v8h8" fill="#93b4f5" /></svg>
+                Preventivo.pdf
+              </div>
+              <div data-hf-id="hf-uo2c" class="stamp">10:15</div>
+            </div>
+          </div>
+          <div data-hf-id="hf-wxnd" class="typing" id="f3-t" style="top: 300px"><i data-hf-id="hf-zsm9"></i><i data-hf-id="hf-06xa"></i><i data-hf-id="hf-26gf"></i></div>
+        </div>
+      </section>
+
+      <!-- F4 · Manda promemoria -->
+      <section data-hf-id="hf-vl12" id="f4" class="clip" data-start="16.881" data-duration="2.694" data-track-index="1">
+        <div data-hf-id="hf-wtzu" class="feat-head" id="f4-head">
+          <div data-hf-id="hf-r612" class="icon-tile">
+            <svg data-hf-id="hf-iymi" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-6a25" d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path data-hf-id="hf-k99i" d="M10.3 21a1.9 1.9 0 0 0 3.4 0" /></svg>
+          </div>
+          <div data-hf-id="hf-qrfc" class="feat-title">Manda <span data-hf-id="hf-c4o4" class="kw">promemoria</span></div>
+        </div>
+        <div data-hf-id="hf-lhas" class="phone feat-phone" id="f4-phone">
+          <div data-hf-id="hf-w52s" class="phone-head">
+            <svg data-hf-id="hf-7jti" width="76" height="76" viewBox="0 0 64 64"><rect data-hf-id="hf-3rtl" width="64" height="64" rx="32" fill="#2563EB" /><rect data-hf-id="hf-36cz" x="24" y="18" width="7" height="28" fill="#fff" /><rect data-hf-id="hf-poph" x="24" y="39" width="18" height="7" fill="#fff" /></svg>
+            <div data-hf-id="hf-w8fr"><div data-hf-id="hf-wn9b" class="title">Receptionist virtuale</div><div data-hf-id="hf-0u43" class="status">online</div></div>
+          </div>
+          <div data-hf-id="hf-puxt" class="chat-body">
+            <div data-hf-id="hf-jmky" class="bubble in" id="f4-a">Promemoria: domani alle 17:30 hai il tuo appuntamento.<div data-hf-id="hf-2pnc" class="stamp">09:00</div></div>
+            <div data-hf-id="hf-btce" class="bubble out" id="f4-q">Perfetto, grazie!<div data-hf-id="hf-2bcb" class="stamp">09:01 <svg data-hf-id="hf-5nqn" width="30" height="18" viewBox="0 0 30 18" fill="none" stroke="#0EA5C9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-vcnh" d="m2 9 5 5 9-11M13 13l1 1 9-11" /></svg></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= S4 · CLOSE (19.575 – 23.127) ================= -->
+      <section data-hf-id="hf-crg0" id="s4" class="clip on-blue" data-start="19.575" data-duration="3.552" data-track-index="1">
+        <div data-hf-id="hf-ren5" class="center-col" style="top: 420px">
+          <div data-hf-id="hf-updf" id="s4-pre">Provalo.</div>
+          <div data-hf-id="hf-zw3j" id="s4-title">Scrivici in privato</div>
+        </div>
+        <div data-hf-id="hf-w0eo" class="lockup" id="s4-lockup">
+          <div data-hf-id="hf-jaba" class="wordmark"><span data-hf-id="hf-rjxg" class="lrc">LRC</span> <span data-hf-id="hf-fush" class="its">IT Solutions</span></div>
+        </div>
+      </section>
+
+      <!-- ================= CAPTIONS (hook + solution) ================= -->
+      <div data-hf-id="hf-iuvo" id="captions"></div>
+
+      <!-- ================= AUDIO ================= -->
+      <audio data-hf-id="hf-ukfn" id="vo-hook" src="assets/voice/01-hook.mp3" data-start="0" data-duration="3.866" data-track-index="10" data-volume="1"></audio>
+      <audio data-hf-id="hf-mv5o" id="vo-solution" src="assets/voice/02-solution.mp3" data-start="3.7" data-duration="4.65" data-track-index="9" data-volume="1"></audio>
+      <audio data-hf-id="hf-eary" id="vo-book" src="assets/voice/03a-book.mp3" data-start="8.95" data-duration="1.671" data-track-index="10" data-volume="1"></audio>
+      <audio data-hf-id="hf-k53r" id="vo-answer" src="assets/voice/03b-answer.mp3" data-start="11.62" data-duration="1.619" data-track-index="9" data-volume="1"></audio>
+      <audio data-hf-id="hf-mfva" id="vo-quote" src="assets/voice/03c-quote.mp3" data-start="14.29" data-duration="1.776" data-track-index="10" data-volume="1"></audio>
+      <audio data-hf-id="hf-34dv" id="vo-remind" src="assets/voice/03d-remind.mp3" data-start="16.94" data-duration="1.462" data-track-index="9" data-volume="1"></audio>
+      <audio data-hf-id="hf-g86j" id="vo-close" src="assets/voice/04-close.mp3" data-start="19.7" data-duration="2.586" data-track-index="10" data-volume="1"></audio>
+      <!-- music starts on its first downbeat (1.811s) so every scene cut lands on a beat -->
+      <audio data-hf-id="hf-itp5" id="music-bed" src="assets/bgm/track.mp3" data-start="0" data-duration="23.127" data-media-start="1.811" data-track-index="11" data-volume="0.22" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:1},{&quot;t&quot;:22.3,&quot;v&quot;:1},{&quot;t&quot;:23.127,&quot;v&quot;:0}]}]}" data-fx-carve="{&quot;enabled&quot;:true,&quot;sources&quot;:[&quot;vo-hook&quot;,&quot;vo-solution&quot;,&quot;vo-book&quot;,&quot;vo-answer&quot;,&quot;vo-quote&quot;,&quot;vo-remind&quot;,&quot;vo-close&quot;],&quot;strength&quot;:0.8}" data-fx-chain="{&quot;version&quot;:1,&quot;nodes&quot;:[{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n1&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:250,&quot;gain&quot;:-7.4,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n2&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:400,&quot;gain&quot;:-7.4,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n3&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:630,&quot;gain&quot;:-7.4,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n4&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:1000,&quot;gain&quot;:-7.4,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n5&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:1600,&quot;gain&quot;:-14.8,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n6&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:2500,&quot;gain&quot;:-7.4,&quot;q&quot;:2.06}},{&quot;type&quot;:&quot;gain&quot;,&quot;id&quot;:&quot;n7&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;gain&quot;:0}}]}"></audio>
+    </div>
+
+    <script>
+      // Beat grid (video time) — music bar = 1.788s, beat ≈ 0.441s. Every scene cut is a beat.
+      const BEAT = 0.4415;
+gsap.set("#bg1", { z: -40, transformPerspective: 1920, rotationX: -1, rotationY: -4 });
+gsap.set("#bg1-2", { z: -25, transformPerspective: 1920, rotationX: 10, rotationY: -15 });
+gsap.set("#bg1", { x: -111.641, y: -158.486 });
+gsap.set("#bg1-2", { x: -54.574, y: -102.341 });
+gsap.set("#bg1-inner", { x: 38.569, y: 72.607 });
+      const tl = gsap.timeline({ paused: true });
+
+      // ---------- captions (HeyGen word timestamps, offset by each line's data-start) ----------
+      const CAPS = [
+        { start: 0.0, end: 1.17, words: [["Perdi", 0.34], ["clienti", 0.68]] },
+        { start: 1.17, end: 2.84, words: [["perché", 1.2], ["non", 2.05], ["rispondi", 2.35]] },
+        { start: 2.84, end: 3.7, words: [["su", 2.86], ["WhatsApp?", 3.03]] },
+        { start: 3.95, end: 5.66, words: [["Il", 4.0], ["tuo", 4.17], ["receptionist", 4.38], ["virtuale", 5.11]] },
+        { start: 5.66, end: 6.85, words: [["su", 5.7], ["WhatsApp.", 5.92]] },
+      ];
+      const capRoot = document.getElementById("captions");
+      CAPS.forEach((c, gi) => {
+        const g = document.createElement("div");
+        g.className = "cap";
+        g.id = "cg-" + gi;
+        const pill = document.createElement("div");
+        pill.className = "pill";
+        c.words.forEach(([t], wi) => {
+          const s = document.createElement("span");
+          s.className = "w";
+          s.id = "cg-" + gi + "-w" + wi;
+          s.textContent = t;
+          pill.appendChild(s);
+          if (wi < c.words.length - 1) pill.appendChild(document.createTextNode(" "));
+        });
+        g.appendChild(pill);
+        capRoot.appendChild(g);
+        tl.fromTo(g, { opacity: 0, y: 24, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(1.6)" }, c.start);
+        c.words.forEach(([, wt], wi) => {
+          tl.to("#cg-" + gi + "-w" + wi, { opacity: 1, duration: 0.08 }, wt);
+        });
+        tl.to(g, { opacity: 0, duration: 0.1, ease: "power2.in" }, c.end - 0.1);
+        tl.set(g, { opacity: 0, visibility: "hidden" }, c.end);
+      });
+
+      // ---------- backgrounds: slow ambient drift ----------
+      tl.to("#bg1-inner", { keyframes: { "0%": { scaleX: 1, scaleY: 1 }, "14.243%": { scaleX: 1.108, scaleY: 1.107 }, "100%": { scaleX: 1.08, scaleY: 1.08 }, easeEach: "none" }, duration: 8.893 }, 0);
+      tl.fromTo("#bg2-inner", { scale: 1.02 }, { scale: 1.09, duration: 10.682, ease: "none" }, 8.893);
+      tl.fromTo("#bg3-inner", { scale: 1.06 }, { scale: 1.0, duration: 3.552, ease: "none" }, 19.575);
+
+      // ---------- S1 · hook ----------
+      tl.fromTo("#s1-phone", { y: 80, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 0);
+      ["#s1-r1", "#s1-r2", "#s1-r3", "#s1-r4", "#s1-r5"].forEach((r, i) => {
+        tl.fromTo(r, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.22, ease: "power3.out" }, 0.14 + i * BEAT * 0.75);
+      });
+      // unread badges keep piling up on the beat
+      const bump = (id, n, t) => {
+        tl.set(id, { textContent: String(n) }, t);
+        tl.fromTo(id, { scale: 1.6 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, t);
+      };
+      bump("#s1-b2", 3, 2.229);
+      bump("#s1-b4", 4, 2.229);
+      bump("#s1-b1", 2, 2.67);
+      bump("#s1-b5", 2, 2.67);
+      bump("#s1-b3", 2, 3.112);
+      bump("#s1-b4", 5, 3.112);
+      tl.set("#s1-status", { textContent: "Messaggi non letti" }, 2.229);
+      tl.to("#s1-phone", { rotation: -1.5, duration: 0.08, yoyo: true, repeat: 3, ease: "power1.inOut" }, 3.112);
+
+      // ---------- S2 · solution ----------
+      tl.fromTo("#s2-lockup", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 3.553);
+      tl.fromTo("#s2-title", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 3.553 + BEAT);
+      tl.fromTo("#s2-sub", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.782);
+      tl.fromTo("#s2-badge", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, 6.86);
+      // badge breathes on the downbeats that follow
+      [7.546, 8.429].forEach((t) => {
+        tl.fromTo("#s2-badge", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, t);
+      });
+
+      // ---------- S3 · features ----------
+      tl.fromTo("#s3-top", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 8.893);
+      const FEATS = [
+        { id: "f1", t: 8.893, typing: true },
+        { id: "f2", t: 11.564, typing: true },
+        { id: "f3", t: 14.234, typing: true },
+        { id: "f4", t: 16.881, typing: false },
+      ];
+      FEATS.forEach(({ id, t, typing }) => {
+        // hard cut on the beat: everything slams in together
+        tl.fromTo("#" + id + "-head .icon-tile", { scale: 0.4, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.32, ease: "back.out(2)" }, t);
+        tl.fromTo("#" + id + "-head .feat-title", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, t + 0.04);
+        tl.fromTo("#" + id + "-phone", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, t + 0.06);
+        if (typing) {
+          tl.fromTo("#" + id + "-q", { opacity: 0, scale: 0.8, transformOrigin: "100% 100%" }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + BEAT);
+          tl.fromTo("#" + id + "-t", { opacity: 0 }, { opacity: 1, duration: 0.1 }, t + BEAT * 2);
+          tl.fromTo("#" + id + "-t i", { y: 0 }, { y: -8, duration: 0.15, stagger: 0.08, yoyo: true, repeat: 1, ease: "sine.inOut" }, t + BEAT * 2);
+          tl.set("#" + id + "-t", { opacity: 0 }, t + BEAT * 3);
+          tl.fromTo("#" + id + "-a", { opacity: 0, scale: 0.8, transformOrigin: "0% 100%" }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + BEAT * 3);
+        } else {
+          tl.fromTo("#" + id + "-a", { opacity: 0, scale: 0.8, transformOrigin: "0% 100%" }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + BEAT);
+          tl.fromTo("#" + id + "-q", { opacity: 0, scale: 0.8, transformOrigin: "100% 100%" }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + BEAT * 3);
+        }
+      });
+
+      // ---------- S4 · close ----------
+      tl.fromTo("#s4-pre", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 19.575 + BEAT);
+      tl.fromTo("#s4-title", { opacity: 0, y: 70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "power3.out" }, 20.898);
+      tl.fromTo("#s4-lockup", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 21.339);
+
+      window.__timelines["main"] = tl;
+      tl.fromTo("#bg1-inner-2", { scale: 1.0 }, { scale: 1.08, duration: 8.893, ease: "none" }, 8.893);
+    </script>
+  </body>
+</html>

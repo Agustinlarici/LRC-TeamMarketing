@@ -1,0 +1,56 @@
+[
+  {
+    "id": "w0",
+    "text": "Il",
+    "start": 0.299,
+    "end": 0.4267
+  },
+  {
+    "id": "w1",
+    "text": "tuo",
+    "start": 0.469,
+    "end": 0.64
+  },
+  {
+    "id": "w2",
+    "text": "receptionist",
+    "start": 0.683,
+    "end": 1.28
+  },
+  {
+    "id": "w3",
+    "text": "virtuale",
+    "start": 1.408,
+    "end": 1.92
+  },
+  {
+    "id": "w4",
+    "text": "su",
+    "start": 2.005,
+    "end": 2.176
+  },
+  {
+    "id": "w5",
+    "text": "WhatsApp.",
+    "start": 2.219,
+    "end": 2.901
+  },
+  {
+    "id": "w6",
+    "text": "Ventiquattro",
+    "start": 3.2,
+    "end": 3.797
+  },
+  {
+    "id": "w7",
+    "text": "su",
+    "start": 3.84,
+    "end": 3.968
+  },
+  {
+    "id": "w8",
+    "text": "sette.",
+    "start": 4.011,
+    "end": 4.406
+  }
+]
