@@ -1,0 +1,4 @@
+# Dependencias y cachés regenerables (no incluye .hyperframes/: ya está versionado en videos/lrc-solutions)
+node_modules/
+.thumbnails/
+.waveform-cache/
